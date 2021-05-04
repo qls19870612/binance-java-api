@@ -1,6 +1,10 @@
 package com.binance.api.client;
 
+import com.binance.api.client.config.ConfigLoader;
 import com.binance.api.client.impl.*;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import static com.binance.api.client.impl.BinanceApiServiceGenerator.getSharedClient;
 
@@ -8,6 +12,7 @@ import static com.binance.api.client.impl.BinanceApiServiceGenerator.getSharedCl
  * A factory for creating BinanceApi client objects.
  */
 public class BinanceApiClientFactory {
+  private static final Logger logger = LoggerFactory.getLogger(BinanceApiClientFactory.class);
 
   /**
    * API Key
@@ -39,6 +44,8 @@ public class BinanceApiClientFactory {
    * @return the binance api client factory
    */
   public static BinanceApiClientFactory newInstance(String apiKey, String secret) {
+    apiKey = ConfigLoader.getString("your_api_key");
+    secret = ConfigLoader.getString("your_secret");
     return new BinanceApiClientFactory(apiKey, secret);
   }
 

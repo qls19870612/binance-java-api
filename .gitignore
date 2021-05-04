@@ -99,3 +99,4 @@ target/
 .*
 !/.gitignore
 /nbproject/
+*.properties

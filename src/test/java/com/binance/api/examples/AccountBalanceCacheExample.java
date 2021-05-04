@@ -6,6 +6,9 @@ import com.binance.api.client.BinanceApiWebSocketClient;
 import com.binance.api.client.domain.account.Account;
 import com.binance.api.client.domain.account.AssetBalance;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.Map;
 import java.util.TreeMap;
 
@@ -15,7 +18,7 @@ import static com.binance.api.client.domain.event.UserDataUpdateEvent.UserDataUp
  * Illustrates how to use the user data event stream to create a local cache for the balance of an account.
  */
 public class AccountBalanceCacheExample {
-
+  private static final Logger logger = LoggerFactory.getLogger(AccountBalanceCacheExample.class);
   private final BinanceApiClientFactory clientFactory;
 
   /**
@@ -45,6 +48,10 @@ public class AccountBalanceCacheExample {
 
     this.accountBalanceCache = new TreeMap<>();
     for (AssetBalance assetBalance : account.getBalances()) {
+      double v = Double.parseDouble(assetBalance.getFree());
+      if (v > 0) {
+        logger.debug("initializeAssetBalanceCacheAndStreamSession assetBalance:{},v:{}", assetBalance,v);
+      }
       accountBalanceCache.put(assetBalance.getAsset(), assetBalance);
     }
 
@@ -62,6 +69,10 @@ public class AccountBalanceCacheExample {
         // Override cached asset balances
         for (AssetBalance assetBalance : response.getAccountUpdateEvent().getBalances()) {
           accountBalanceCache.put(assetBalance.getAsset(), assetBalance);
+          double v = Double.parseDouble(assetBalance.getAsset());
+          if (v > 0) {
+            logger.debug("startAccountBalanceEventStreaming assetBalance:{}", assetBalance);
+          }
         }
         System.out.println(accountBalanceCache);
       }
